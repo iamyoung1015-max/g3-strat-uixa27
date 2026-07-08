@@ -212,24 +212,23 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .d-now{color:var(--good);border-color:color-mix(in srgb,var(--good) 42%,transparent);background:color-mix(in srgb,var(--good) 13%,transparent)}
 .d-wait{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 44%,transparent);background:color-mix(in srgb,var(--warn) 14%,transparent)}
 .d-talk{color:var(--neu);border-color:color-mix(in srgb,var(--neu) 42%,transparent);background:color-mix(in srgb,var(--neu) 13%,transparent)}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:13px}
-.dcat{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface-2)}
-.dcat-h{font:650 .68rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
-  padding:11px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
-.drow{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;
-  padding:11px 14px;border-bottom:1px solid var(--line-2);text-decoration:none;color:inherit;cursor:pointer;transition:background .12s}
-.drow:last-child{border-bottom:0}
-.drow:hover{background:var(--surface)}
-.drow .dmain{display:flex;flex-direction:column;min-width:0;gap:3px}
-.drow .dt{font-weight:680;font-size:.9rem;color:var(--ink);line-height:1.35}
-.drow .dn{font-size:.79rem;color:var(--ink-3);line-height:1.5}
-.drow .dright{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none;text-align:right}
-.drow .dsrc{font:600 .64rem/1 var(--mono);color:var(--ink-3);white-space:nowrap}
-.drow:hover .dsrc{color:var(--accent-ink)}
-@media (max-width:560px){
-  .drow{flex-direction:column;gap:8px}
-  .drow .dright{flex-direction:row;align-items:center;align-self:stretch;justify-content:space-between}
-}
+.dtable-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.dtable{width:100%;border-collapse:collapse;font-size:.86rem}
+.dtable thead th{background:var(--surface-2);color:var(--ink-2);font:650 .66rem/1 var(--mono);
+  letter-spacing:.06em;text-transform:uppercase;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.dtable td{padding:11px 12px;border-bottom:1px solid var(--line-2);vertical-align:top;line-height:1.5}
+.dtable tbody tr:last-child td{border-bottom:0}
+.dtable tbody tr:hover td{background:var(--surface-2)}
+.dtable .c-chk{width:38px;text-align:center}
+.dtable .c-cat{width:132px;font-weight:680;color:var(--ink);border-right:1px solid var(--line);background:var(--surface-2)}
+.dtable .dt{font-weight:680;color:var(--ink)}
+.dtable .dn{color:var(--ink-2)}
+.dtable .c-st,.dtable .c-doc{white-space:nowrap}
+.dtable .dsrc{font:600 .68rem/1 var(--mono);color:var(--ink-3);text-decoration:none}
+.dtable .dsrc:hover{color:var(--accent-ink)}
+.dtable input.dcheck{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);vertical-align:middle}
+.dtable tr.done .dt,.dtable tr.done .dn{text-decoration:line-through;color:var(--ink-3)}
+.dtable tr.done td{opacity:.72}
 
 @media (max-width:920px){
   body{grid-template-columns:1fr}
@@ -1662,8 +1661,7 @@ var cache = {};
 /* content-level open decisions surfaced on the cover */
 var DECISIONS = [
  { cat:"브랜드 · 메시지", items:[
-   {t:"브랜드–주체 관계 표기", note:"‘(주)팩앤롤이 운영하는 교육 브랜드 G3아카데미’ 연결 문장 확정", st:"talk", doc:"04"},
-   {t:"메인 헤드라인 택1", note:"후보 3개 중 최종 1개 선택", st:"now", doc:"04"}
+   {t:"브랜드 명칭 확정", note:"현재 ‘G3아카데미’(임시 워드마크) — 최종 브랜드명 확정 필요", st:"talk", doc:"04"}
  ]},
  { cat:"커리큘럼 · 교육 운영", items:[
    {t:"10주 커리큘럼 확정", note:"회차·시간·온오프 배분 (현재 임시본)", st:"wait", doc:"03"},
@@ -1679,12 +1677,6 @@ var DECISIONS = [
  { cat:"결과물 데모", items:[
    {t:"결과물 6개 개요", note:"제목·업종·한 줄 설명 (초안 있음 — 지금 확정 가능)", st:"now", doc:"05"},
    {t:"실제 썸네일 · 영상", note:"8월 제작분으로 교체 예정", st:"wait", doc:"05"}
- ]},
- { cat:"전환 · 페이지 구조", items:[
-   {t:"상담 폼 문의 옵션", note:"‘공급기업 컨설팅’ 항목 추가", st:"now", doc:"05"},
-   {t:"응대 SLA 문구", note:"‘영업일 1일 이내 연락’ 실제 확인", st:"talk", doc:"05"},
-   {t:"공급기업 페이지 구조", note:"전용 교육 과정 섹션 신설 여부", st:"talk", doc:"06"},
-   {t:"도메인 연결", note:"g3academy.co.kr 보유 확인·웹 연결", st:"talk", doc:"04"}
  ]}
 ];
 
@@ -1870,24 +1862,30 @@ function decisionsBoard(){
   var h = '<section class="board">'+
     '<div class="bkick">먼저 정의할 것 · Open Decisions</div>'+
     '<div class="board-title">기획 확정이 필요한 항목</div>'+
-    '<div class="board-lead">디자인에 앞서 <strong>콘텐츠·정책으로 먼저 정해야 할</strong> 항목입니다. 각 항목을 누르면 관련 문서로 이동합니다.</div>'+
+    '<div class="board-lead">디자인에 앞서 <strong>콘텐츠·정책으로 먼저 정해야 할</strong> 항목입니다. 왼쪽 체크박스로 확정 여부를 표시하고(브라우저에 저장), 오른쪽 문서 링크로 이동하세요.</div>'+
     '<div class="board-legend">'+
       '<span class="lg"><span class="dchip d-now">'+tally.now+'</span> 지금 확정 가능</span>'+
       '<span class="lg"><span class="dchip d-wait">'+tally.wait+'</span> 자료·수치 대기</span>'+
       '<span class="lg"><span class="dchip d-talk">'+tally.talk+'</span> 논의 필요</span>'+
-    '</div><div class="dgrid">';
+    '</div>'+
+    '<div class="dtable-wrap"><table class="dtable"><thead><tr>'+
+      '<th class="c-chk">✓</th><th class="c-cat">묶음</th><th>항목</th><th>확정 필요 내용</th><th class="c-st">상태</th><th class="c-doc">문서</th>'+
+    '</tr></thead><tbody>';
   DECISIONS.forEach(function(g){
-    h += '<div class="dcat"><div class="dcat-h">'+esc(g.cat)+'</div>';
-    g.items.forEach(function(it){
+    g.items.forEach(function(it, idx){
       var sm = stMeta[it.st];
-      h += '<a class="drow" href="#doc-'+it.doc+'" data-nav="'+it.doc+'">'+
-             '<span class="dmain"><span class="dt">'+esc(it.t)+'</span><span class="dn">'+esc(it.note)+'</span></span>'+
-             '<span class="dright"><span class="dchip '+sm.c+'">'+sm.l+'</span><span class="dsrc">'+seqOf(it.doc)+' 문서 →</span></span>'+
-           '</a>';
+      var key = g.cat+"::"+it.t;
+      h += '<tr>'+
+        '<td class="c-chk"><input type="checkbox" class="dcheck" data-key="'+esc(key)+'" aria-label="확정 체크"></td>'+
+        (idx===0 ? '<td class="c-cat" rowspan="'+g.items.length+'">'+esc(g.cat)+'</td>' : '')+
+        '<td class="dt">'+esc(it.t)+'</td>'+
+        '<td class="dn">'+esc(it.note)+'</td>'+
+        '<td class="c-st"><span class="dchip '+sm.c+'">'+sm.l+'</span></td>'+
+        '<td class="c-doc"><a class="dsrc" href="#doc-'+it.doc+'" data-nav="'+it.doc+'">'+seqOf(it.doc)+' 문서 →</a></td>'+
+      '</tr>';
     });
-    h += '</div>';
   });
-  return h + '</div></section>';
+  return h + '</tbody></table></div></section>';
 }
 
 function coverView(){
@@ -1953,9 +1951,18 @@ function setActive(id){
   }
 }
 
+function restoreChecks(){
+  var done={}; try{ done=JSON.parse(localStorage.getItem("g3-decisions")||"{}"); }catch(e){}
+  var boxes = view.querySelectorAll(".dcheck");
+  for(var i=0;i<boxes.length;i++){
+    var cb=boxes[i], on=!!done[cb.getAttribute("data-key")];
+    cb.checked=on; var tr=cb.closest("tr"); if(tr) tr.classList.toggle("done",on);
+  }
+}
 function show(id, noScroll){
   if(id!=="cover" && !META[id]) id="cover";
   view.innerHTML = (id==="cover") ? coverView() : docView(id);
+  if(id==="cover") restoreChecks();
   setActive(id);
   topTitle.textContent = (id==="cover") ? "개요" : (seqOf(id)+" · "+META[id].title);
   document.title = (id==="cover") ? "G3아카데미 · 사업전략 문서" : (seqOf(id)+" "+META[id].title+" · G3아카데미");
@@ -2000,6 +2007,17 @@ document.addEventListener("click", function(e){
     var nh = "#doc-"+d;
     if(location.hash===nh){ show(d); } else { location.hash=nh; }
   }
+});
+
+/* decisions 체크박스 상태 저장(브라우저 localStorage) */
+document.addEventListener("change", function(e){
+  var cb = (e.target && e.target.classList && e.target.classList.contains("dcheck")) ? e.target : null;
+  if(!cb) return;
+  var key = cb.getAttribute("data-key");
+  var done={}; try{ done=JSON.parse(localStorage.getItem("g3-decisions")||"{}"); }catch(e2){}
+  if(cb.checked) done[key]=1; else delete done[key];
+  try{ localStorage.setItem("g3-decisions", JSON.stringify(done)); }catch(e2){}
+  var tr = cb.closest("tr"); if(tr) tr.classList.toggle("done", cb.checked);
 });
 
 window.addEventListener("hashchange", route);
