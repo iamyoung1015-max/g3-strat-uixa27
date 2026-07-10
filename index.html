@@ -1660,23 +1660,17 @@ var cache = {};
 
 /* content-level open decisions surfaced on the cover */
 var DECISIONS = [
- { cat:"브랜드 · 메시지", items:[
-   {t:"브랜드 명칭 확정", note:"현재 ‘G3아카데미’(임시 워드마크) — 최종 브랜드명 확정 필요", st:"talk", doc:"04"}
+ { cat:"브랜드", items:[
+   {t:"브랜드명", note:"현재 G3아카데미", st:"wait"}
  ]},
- { cat:"커리큘럼 · 교육 운영", items:[
-   {t:"10주 커리큘럼 확정", note:"회차·시간·온오프 배분 (현재 임시본)", st:"wait", doc:"03"},
-   {t:"교육 비용 · 수강료", note:"자부담 / 정부지원 구조와 가격 정책", st:"wait", doc:"05"},
-   {t:"개강일 · 정원", note:"현재 ‘2026년 10월 개강 예정’만 확정", st:"wait", doc:"05"}
+ { cat:"교육", items:[
+   {t:"교육 커리큘럼", note:"교육 강의 자료 만들기", st:"none"},
+   {t:"교육 정보", note:"모집 일정, 교육 일정, 수강료, 정원 등", st:"wait"}
  ]},
- { cat:"신뢰 자산 (수치 · 인물)", items:[
-   {t:"(주)팩앤롤 실적 수치", note:"구축 건수·지원사업 실적·업력 실제 숫자", st:"wait", doc:"04"},
-   {t:"공개 가능 레퍼런스 범위", note:"고객사명 / 사례 공개 여부", st:"talk", doc:"04"},
-   {t:"강사(한태진) 프로필", note:"사진·경력 상세·소셜 링크", st:"wait", doc:"05"},
-   {t:"채널 URL", note:"인스타·링크드인·블로그·홈페이지 주소", st:"wait", doc:"05"}
- ]},
- { cat:"결과물 데모", items:[
-   {t:"결과물 6개 개요", note:"제목·업종·한 줄 설명 (초안 있음 — 지금 확정 가능)", st:"now", doc:"05"},
-   {t:"실제 썸네일 · 영상", note:"8월 제작분으로 교체 예정", st:"wait", doc:"05"}
+ { cat:"강사", items:[
+   {t:"SNS", note:"인스타그램, 스레드, 블로그, 링크드인 어떤 플랫폼 운영할 것인지", st:"wait"},
+   {t:"경력", note:"경력 사항", st:"wait"},
+   {t:"포트폴리오", note:"공개 가능한 AI, AX 레퍼런스", st:"wait"}
  ]}
 ];
 
@@ -1856,32 +1850,28 @@ function docView(num){
 }
 
 function decisionsBoard(){
-  var stMeta = { now:{c:"d-now", l:"지금 확정 가능"}, wait:{c:"d-wait", l:"자료·수치 대기"}, talk:{c:"d-talk", l:"논의 필요"} };
-  var tally = { now:0, wait:0, talk:0 };
+  var stMeta = { wait:{c:"d-wait", l:"대기"}, none:{c:"d-talk", l:"자료 없음"} };
+  var tally = { wait:0, none:0 };
   DECISIONS.forEach(function(g){ g.items.forEach(function(it){ tally[it.st]++; }); });
   var h = '<section class="board">'+
     '<div class="bkick">먼저 정의할 것 · Open Decisions</div>'+
     '<div class="board-title">기획 확정이 필요한 항목</div>'+
-    '<div class="board-lead">디자인에 앞서 <strong>콘텐츠·정책으로 먼저 정해야 할</strong> 항목입니다. 왼쪽 체크박스로 확정 여부를 표시하고(브라우저에 저장), 오른쪽 문서 링크로 이동하세요.</div>'+
+    '<div class="board-lead">디자인에 앞서 <strong>콘텐츠·정책으로 먼저 정해야 할</strong> 항목입니다.</div>'+
     '<div class="board-legend">'+
-      '<span class="lg"><span class="dchip d-now">'+tally.now+'</span> 지금 확정 가능</span>'+
-      '<span class="lg"><span class="dchip d-wait">'+tally.wait+'</span> 자료·수치 대기</span>'+
-      '<span class="lg"><span class="dchip d-talk">'+tally.talk+'</span> 논의 필요</span>'+
+      '<span class="lg"><span class="dchip d-wait">'+tally.wait+'</span> 대기</span>'+
+      '<span class="lg"><span class="dchip d-talk">'+tally.none+'</span> 자료 없음</span>'+
     '</div>'+
     '<div class="dtable-wrap"><table class="dtable"><thead><tr>'+
-      '<th class="c-chk">✓</th><th class="c-cat">묶음</th><th>항목</th><th>확정 필요 내용</th><th class="c-st">상태</th><th class="c-doc">문서</th>'+
+      '<th class="c-cat">구분</th><th>항목</th><th>내용</th><th class="c-st">상태</th>'+
     '</tr></thead><tbody>';
   DECISIONS.forEach(function(g){
     g.items.forEach(function(it, idx){
       var sm = stMeta[it.st];
-      var key = g.cat+"::"+it.t;
       h += '<tr>'+
-        '<td class="c-chk"><input type="checkbox" class="dcheck" data-key="'+esc(key)+'" aria-label="확정 체크"></td>'+
         (idx===0 ? '<td class="c-cat" rowspan="'+g.items.length+'">'+esc(g.cat)+'</td>' : '')+
         '<td class="dt">'+esc(it.t)+'</td>'+
         '<td class="dn">'+esc(it.note)+'</td>'+
         '<td class="c-st"><span class="dchip '+sm.c+'">'+sm.l+'</span></td>'+
-        '<td class="c-doc"><a class="dsrc" href="#doc-'+it.doc+'" data-nav="'+it.doc+'">'+seqOf(it.doc)+' 문서 →</a></td>'+
       '</tr>';
     });
   });
