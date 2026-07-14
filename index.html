@@ -1720,23 +1720,24 @@ var cache = {};
 /* content-level open decisions surfaced on the cover */
 var DECISIONS = [
  { cat:"브랜드", items:[
-   {t:"브랜드명", note:"G2ROW", st:"wait"},
-   {t:"기타", note:"도메인, 이메일 등", st:"wait"}
+   {t:"브랜드명칭", note:"G2ROW, 지투로우", st:"done"},
+   {t:"도메인", note:"g2row.kr", st:"done"},
+   {t:"이메일", note:"help@g2row.kr", st:"wait"}
  ]},
  { cat:"교육", items:[
-   {t:"교육 커리큘럼", note:"교육 강의 자료 제작", st:"none"},
-   {t:"교육 정보", note:"모집 일정, 교육 일정, 수강료, 정원 등", st:"wait"}
+   {t:"교육과정", note:"10주 강의 자료 제작", st:"wait"},
+   {t:"교육정보", note:"모집일정, 교육일정, 수강료, 정원", st:"wait"}
  ]},
  { cat:"강사", items:[
-   {t:"SNS", note:"인스타그램, 스레드, 블로그, 링크드인 오픈 및 콘텐츠 적립", st:"wait"},
-   {t:"경력", note:"경력 사항 내용", st:"wait"},
-   {t:"포트폴리오", note:"공개 가능한 AI, AX 레퍼런스 자료", st:"wait"}
+   {t:"SNS", note:"운영할 플랫폼 선정 → 계정 생성 → 콘텐츠 적립", st:"wait"},
+   {t:"프로필", note:"사진, 경력, 자격증 등 정보", st:"wait"},
+   {t:"레퍼런스", note:"포트폴리오 자료(이미지, 내용)", st:"wait"}
  ]},
  { cat:"회사", items:[
-   {t:"실적", note:"구축 건수, 지원사업 실적, 업력을 수치 증명", st:"wait"}
+   {t:"팩앤롤", note:"구축건수, 지원사업 실적, 업력 등 정보", st:"wait"}
  ]},
  { cat:"홈페이지", items:[
-   {t:"범위", note:"공급기업 페이지 오픈할지", st:"wait"}
+   {t:"1차 오픈 범위", note:"공급기업 메뉴 오픈 여부", st:"wait"}
  ]}
 ];
 
@@ -1916,14 +1917,14 @@ function docView(num){
 }
 
 function decisionsBoard(){
-  var stMeta = { wait:{c:"d-wait", l:"대기"}, none:{c:"d-talk", l:"자료 없음"} };
-  var tally = { wait:0, none:0 };
+  var stMeta = { done:{c:"d-now", l:"확정"}, wait:{c:"d-wait", l:"대기"} };
+  var tally = { done:0, wait:0 };
   DECISIONS.forEach(function(g){ g.items.forEach(function(it){ tally[it.st]++; }); });
   var h = '<section class="board">'+
     '<div class="board-title">기획 확정이 필요한 항목</div>'+
     '<div class="board-legend">'+
+      '<span class="lg"><span class="dchip d-now">'+tally.done+'</span> 확정</span>'+
       '<span class="lg"><span class="dchip d-wait">'+tally.wait+'</span> 대기</span>'+
-      '<span class="lg"><span class="dchip d-talk">'+tally.none+'</span> 자료 없음</span>'+
     '</div>'+
     '<div class="dtable-wrap"><table class="dtable"><thead><tr>'+
       '<th class="c-cat">구분</th><th>항목</th><th>내용</th><th class="c-st">상태</th>'+
