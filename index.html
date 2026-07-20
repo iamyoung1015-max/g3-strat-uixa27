@@ -213,6 +213,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .dchip{font:650 0.875rem/1 var(--mono);letter-spacing:.04em;padding:3px 8px;border-radius:999px;border:1px solid;white-space:nowrap}
 .d-now{color:var(--good);border-color:color-mix(in srgb,var(--good) 42%,transparent);background:color-mix(in srgb,var(--good) 13%,transparent)}
 .d-wait{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 44%,transparent);background:color-mix(in srgb,var(--warn) 14%,transparent)}
+.d-first{color:var(--neu);border-color:color-mix(in srgb,var(--neu) 44%,transparent);background:color-mix(in srgb,var(--neu) 14%,transparent)}
 .d-talk{color:var(--neu);border-color:color-mix(in srgb,var(--neu) 42%,transparent);background:color-mix(in srgb,var(--neu) 13%,transparent)}
 .dtable-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
 .dtable{width:100%;border-collapse:collapse;font-size:0.875rem}
@@ -1826,11 +1827,11 @@ var DECISIONS = [
  { cat:"브랜드", items:[
    {t:"브랜드명칭", note:"G2ROW, 지투로우", st:"done"},
    {t:"도메인", note:"g2row.kr", st:"done"},
-   {t:"이메일", note:"g2row@gmail.com", st:"wait"}
+   {t:"이메일", note:"g2row@gmail.com", st:"done"}
  ]},
  { cat:"교육", items:[
-   {t:"교육과정", note:"10주 강의 자료 제작", st:"wait"},
-   {t:"교육정보", note:"모집일정, 교육일정, 수강료, 정원", st:"wait"}
+   {t:"교육과정", note:"10주 강의 자료 제작", st:"first"},
+   {t:"교육정보", note:"모집일정, 교육일정, 수강료, 정원", st:"first"}
  ]},
  { cat:"강사", items:[
    {t:"SNS", note:"운영할 플랫폼 선정 → 계정 생성 → 콘텐츠 적립", st:"wait"},
@@ -2021,13 +2022,14 @@ function docView(num){
 }
 
 function decisionsBoard(){
-  var stMeta = { done:{c:"d-now", l:"확정"}, wait:{c:"d-wait", l:"대기"} };
-  var tally = { done:0, wait:0 };
+  var stMeta = { done:{c:"d-now", l:"확정"}, first:{c:"d-first", l:"1차"}, wait:{c:"d-wait", l:"대기"} };
+  var tally = { done:0, first:0, wait:0 };
   DECISIONS.forEach(function(g){ g.items.forEach(function(it){ tally[it.st]++; }); });
   var h = '<section class="board">'+
     '<div class="board-title">기획 확정이 필요한 항목</div>'+
     '<div class="board-legend">'+
       '<span class="lg"><span class="dchip d-now">'+tally.done+'</span> 확정</span>'+
+      '<span class="lg"><span class="dchip d-first">'+tally.first+'</span> 1차</span>'+
       '<span class="lg"><span class="dchip d-wait">'+tally.wait+'</span> 대기</span>'+
     '</div>'+
     '<div class="dtable-wrap"><table class="dtable"><thead><tr>'+
